@@ -90,44 +90,11 @@ document.addEventListener('click', event => {
   const selectedCategory = data.find(category => category.key === categoryId);
   const selectedProduct = selectedCategory.products.find(product => product.id == productId);
 
+
   if (event.target.classList.contains('btn-send')) {
     const orderForm = document.forms.orderForm;
-
-    const orderSurname = orderForm.surname.value;
-    const orderName = orderForm.name.value;
-    const orderMidlename = orderForm.midlename.value;
-    const orderCity = orderForm.city.value;
-    const orderNewpost = orderForm.newpost.value;
-    const orderPayment = orderForm.payment.value;
-    const orderQty = orderForm.qty.value;
-    const orderDescription = orderForm.description.value;
-    const orderTotalPrice = orderQty * selectedProduct.price;
-    const orderDate = new Date();
-    orderDate.setTime(orderDate.getTime())
-
-    let order = {
-      categoryId: categoryId,
-      productId: productId,
-      surname: orderSurname,
-      name: orderName,
-      midlename: orderMidlename,
-      city: orderCity,
-      post: orderNewpost,
-      payment: orderPayment,
-      qty: orderQty,
-      note: orderDescription,
-      total: orderTotalPrice,
-      date: orderDate
-    };
-
-    const mandatoryFields = {
-      surname: orderSurname,
-      name: orderName,
-      midlename: orderMidlename,
-      city: orderCity,
-      post: orderNewpost,
-      qty: orderQty
-    };
+    const order = getAllFieldsFromForm(orderForm, selectedProduct, categoryId, productId);
+    const mandatoryFields = getMandatoryFieldsFromForm(orderForm, selectedProduct);
 
     // Логика для проверки введения данных в форму.
     const inputFields = document.querySelectorAll('input');
@@ -144,7 +111,7 @@ document.addEventListener('click', event => {
     }
 
   }
-  
+
 });
 
 

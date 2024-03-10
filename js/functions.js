@@ -257,5 +257,61 @@ function refreshOrdersInMyCart(myCart) {
 
 
 
+function getAllFieldsFromForm(orderForm, selectedProduct, categoryId, productId) {
+  const orderSurname = orderForm.surname.value;
+  const orderName = orderForm.name.value;
+  const orderMidlename = orderForm.midlename.value;
+  const orderCity = orderForm.city.value;
+  const orderNewpost = orderForm.newpost.value;
+  const orderPayment = orderForm.payment.value;
+  const orderQty = orderForm.qty.value;
+  const orderDescription = orderForm.description.value;
+  const orderTotalPrice = orderQty * selectedProduct.price;
+  const orderDate = new Date();
+  orderDate.setTime(orderDate.getTime())
+
+  return {
+    categoryId: categoryId,
+    productId: productId,
+    surname: orderSurname,
+    name: orderName,
+    midlename: orderMidlename,
+    city: orderCity,
+    post: orderNewpost,
+    payment: orderPayment,
+    qty: orderQty,
+    note: orderDescription,
+    total: orderTotalPrice,
+    date: orderDate
+  };
+};
+
+
+
+function getMandatoryFieldsFromForm(orderForm, selectedProduct) {
+  const orderSurname = orderForm.surname.value;
+  const orderName = orderForm.name.value;
+  const orderMidlename = orderForm.midlename.value;
+  const orderCity = orderForm.city.value;
+  const orderNewpost = orderForm.newpost.value;
+  const orderPayment = orderForm.payment.value;
+  const orderQty = orderForm.qty.value;
+  const orderDescription = orderForm.description.value;
+  const orderTotalPrice = orderQty * selectedProduct.price;
+  const orderDate = new Date();
+  orderDate.setTime(orderDate.getTime())
+
+  return {
+    surname: orderSurname,
+    name: orderName,
+    midlename: orderMidlename,
+    city: orderCity,
+    post: orderNewpost,
+    qty: orderQty
+  };
+};
+
+
+
 
 
