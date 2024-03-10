@@ -3,6 +3,8 @@ window.addEventListener('DOMContentLoaded', showCategories);
 document.getElementById('categories').addEventListener('click', event => {
   const categoryId = event.target.getAttribute('data-category');
   showProductsByCategory(categoryId);
+  clearFieldInfo()
+
 });
 
 document.getElementById('products').addEventListener('click', event => {
@@ -10,6 +12,7 @@ document.getElementById('products').addEventListener('click', event => {
   const categoryId = event.target.getAttribute('data-category');
 
   showProductInfo(categoryId, productId);
+  clearFieldInfo()
 });
 
 
@@ -17,8 +20,6 @@ document.getElementById('products').addEventListener('click', event => {
 //При натисканні на “купити” з'являється повідомлення, 
 //що товар куплений і повернення у вихідний стан програми 
 //( коли відображається лише список категорій).
-
-
 
 document.getElementById('product').addEventListener('click', event => {
   const productId = event.target.getAttribute('data-product');
@@ -48,11 +49,46 @@ document.getElementById('product').addEventListener('click', event => {
 // Выводить информацию о заказе на страницу (информация о товаре и о доставке)
 
 
+//console.log(myCartJSON)
+let myCart = getMyCartFromLocalStorage()
+
+document.querySelector('.btn-myorder').addEventListener('click', () => {
+  refreshOrdersInMyCart(myCart);
+  showOrHideOrderPanel();
+  showOrHideShopPanel();
+});
+
+document.querySelector('.btn-back').addEventListener('click', () => {
+  showOrHideOrderPanel();
+  showOrHideShopPanel();
+});
+
+document.querySelector('.orders-list').addEventListener('click', event => {
+  const clickedElement = event.target;
+  const orderNumberToShowDetails = clickedElement.getAttribute('data-deteils');
+  const orderNumberToDelete = clickedElement.getAttribute('data-delete');
+  if (orderNumberToShowDetails !== null) {
+    document.getElementById(orderNumberToShowDetails).classList.toggle('isDisabled');
+  }
+
+  if (orderNumberToDelete !== null) {
+    const deleteIndex = parseInt(orderNumberToDelete);
+    if (!isNaN(deleteIndex)) {
+      myCart.splice(deleteIndex, 1);
+      PushCartToLocalStorage(myCart);
+      refreshOrdersInMyCart(myCart);
+    }
+  }
+
+});
+
 
 document.addEventListener('click', event => {
 
   const productId = event.target.getAttribute('data-product');
   const categoryId = event.target.getAttribute('data-category');
+  const selectedCategory = data.find(category => category.key === categoryId);
+  const selectedProduct = selectedCategory.products.find(product => product.id == productId);
 
   if (event.target.classList.contains('btn-send')) {
     const orderForm = document.forms.orderForm;
@@ -65,8 +101,13 @@ document.addEventListener('click', event => {
     const orderPayment = orderForm.payment.value;
     const orderQty = orderForm.qty.value;
     const orderDescription = orderForm.description.value;
+    const orderTotalPrice = orderQty * selectedProduct.price;
+    const orderDate = new Date();
+    orderDate.setTime(orderDate.getTime())
 
-    const allFields = {
+    let order = {
+      categoryId: categoryId,
+      productId: productId,
       surname: orderSurname,
       name: orderName,
       midlename: orderMidlename,
@@ -74,7 +115,9 @@ document.addEventListener('click', event => {
       post: orderNewpost,
       payment: orderPayment,
       qty: orderQty,
-      note: orderDescription
+      note: orderDescription,
+      total: orderTotalPrice,
+      date: orderDate
     };
 
     const mandatoryFields = {
@@ -93,31 +136,15 @@ document.addEventListener('click', event => {
 
 
     if (isMandatoryFieldsFilled(mandatoryFields)) {
-      showBoughtProductInfo(categoryId, productId);
-      showDeliveryInfo(allFields);
+      saveOrderInCart(order);
+      PushCartToLocalStorage(myCart);
+      showBoughtProductInfo(categoryId, productId, order);
     } else {
       alert('Please fill in all field');
     }
 
   }
+  
 });
 
-// console.log('Surname:', orderSurname);
-// console.log('Name:', orderName);
-// console.log('Midlename:', orderMidlename);
-// console.log('City:', orderCity);
-// console.log('New Poste Branch:', orderNewpost);
-// console.log('Payment:', orderPayment);
-// console.log('Qty:', orderQty);
-// console.log('Description:', orderDescription);
 
-
-{/* <h2>Order details:</h2>
-<p>Surname: ${allFields.surname}</p>
-<p>Name: ${orderName}</p>
-<p>Midlename: ${orderMidlename}</p>
-<p>City: ${orderCity}</p>
-<p>Post Brunch: ${orderNewpost}</p>
-<p>Payment method: ${orderPayment}</p>
-<p>Qty: ${orderQty}</p>
-<p>Your notes: ${orderDescription}</p> */}

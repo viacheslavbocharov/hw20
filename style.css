@@ -8,3 +8,8 @@
   min-height: 100px;
   min-width: 30%;
 }
+
+.isDisabled{
+  display: none;
+}
+
